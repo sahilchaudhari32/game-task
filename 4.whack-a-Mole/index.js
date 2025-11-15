@@ -14,7 +14,6 @@ const holes = document.querySelectorAll(".hole");
 const moles = document.querySelectorAll(".mole");
 const whackMsg = document.getElementById("whackMsg");
 
-// Variables
 let score = 0;
 let hits = 0;
 let time = 30;
