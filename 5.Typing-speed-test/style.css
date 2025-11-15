@@ -7,7 +7,7 @@
 
 body {
   font-family: 'Orbitron', sans-serif;
-  background: radial-gradient(circle at top, #0f0f1a, #000);
+  background: radial-gradient(circle at 30% -10%, #1a1a2f, #000);
   color: #e0e0e0;
   min-height: 100vh;
   display: flex;
@@ -17,184 +17,168 @@ body {
   overflow-x: hidden;
 }
 
-/* --- MAIN CONTAINER --- */
+/* --- CONTAINER --- */
 .container {
-  background: rgba(10, 10, 25, 0.9);
-  border: 2px solid #00ffff33;
-  border-radius: 15px;
-  padding: 40px;
-  max-width: 850px;
+  background: rgba(15, 15, 30, 0.88);
+  border: 2px solid #00ffff50;
+  border-radius: 18px;
+  padding: 45px;
   width: 100%;
-  box-shadow: 0 0 25px #00ffff44, inset 0 0 10px #222;
-  position: relative;
-  transition: 0.4s;
+  max-width: 900px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 40px #00ffff55, inset 0 0 18px #111;
+  transition: 0.4s ease-in-out;
 }
 
 .container:hover {
-  box-shadow: 0 0 40px #00fff5cc, inset 0 0 20px #222;
+  box-shadow: 0 0 60px #00fff5aa, inset 0 0 30px #111;
 }
 
 /* --- TITLE --- */
 h1 {
   text-align: center;
   color: #00fff7;
-  margin-bottom: 30px;
-  font-size: 2.8em;
-  text-shadow: 0 0 10px #00ffff, 0 0 30px #0077ff;
-  letter-spacing: 2px;
+  margin-bottom: 35px;
+  font-size: 3em;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px #00ffff, 0 0 30px #00eaff;
+  animation: glow 2.2s infinite alternate;
 }
 
 /* --- STATS BAR --- */
 .stats-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 40px;
+  gap: 18px;
+  margin-bottom: 35px;
 }
 
 .stat-box {
-  background: linear-gradient(145deg, #111, #1c1c30);
+  background: linear-gradient(145deg, #131325, #1e1e38);
   border: 1px solid #00fff533;
-  color: #00fff5;
-  padding: 20px;
-  border-radius: 12px;
+  padding: 22px;
+  border-radius: 14px;
   text-align: center;
+  color: #00fff5;
+  transition: all .25s ease;
   box-shadow: 0 0 15px #00ffff33;
-  transition: 0.3s;
 }
 
 .stat-box:hover {
-  box-shadow: 0 0 25px #00ffffaa;
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px #00ffffaa;
 }
 
 .stat-box h3 {
-  font-size: 0.9em;
-  margin-bottom: 8px;
-  opacity: 0.8;
+  font-size: .95em;
+  opacity: .7;
+  margin-bottom: 10px;
 }
 
 .stat-box div {
-  font-size: 2em;
+  font-size: 2.3em;
   font-weight: bold;
   text-shadow: 0 0 10px #00fff5;
 }
 
 /* --- TIMER BUTTONS --- */
 .sec {
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.1em;
-  border-radius: 8px;
+  width: 105px;
+  padding: 12px;
+  margin: 12px;
+  font-size: 1.15em;
+  border-radius: 10px;
   border: none;
-  width: 100px;
-  margin: 10px 10px 25px;
-  padding: 10px;
   cursor: pointer;
-  transition: 0.3s;
-  box-shadow: 0 0 15px #00ffff55;
+  font-weight: bold;
+  transition: .25s ease-in-out;
+  box-shadow: 0 0 18px #00ffff44;
 }
 
 .sec1 { background: #ff004c; }
-.sec2 { background: #fffb00; color: #333; }
+.sec2 { background: #ffee00; color: #222; }
 .sec3 { background: #00ff66; }
 
 .sec:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 25px #00ffff;
+  transform: scale(1.13);
+  box-shadow: 0 0 28px #00ffffaa;
 }
 
 /* --- TEXT DISPLAY --- */
 .text-display {
-  background: #0c0c18;
-  color: #e0e0e0;
+  background: #0a0a18;
   padding: 25px;
-  border-radius: 10px;
-  font-size: 1.3em;
+  border-radius: 12px;
+  font-size: 1.35em;
   line-height: 1.8;
-  margin-bottom: 20px;
-  min-height: 150px;
   border: 1px solid #00ffff33;
-  box-shadow: inset 0 0 15px #00ffff22;
+  min-height: 150px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 0 18px #00ffff22;
 }
 
-.text-display .correct {
-  color: #00ff9d;
-}
+.text-display .correct { color: #00ff9d; }
+.text-display .incorrect { color: #ff4444; background: rgba(255, 0, 0, .12); }
+.text-display .current { background: #00ffff; color: #000; }
 
-.text-display .incorrect {
-  color: #ff4444;
-  background: rgba(255, 0, 0, 0.1);
-}
-
-.text-display .current {
-  background: #00ffff;
-  color: #000;
-}
-
-/* --- TEXTAREA --- */
+/* --- TYPING AREA --- */
 #typingArea {
   width: 100%;
+  min-height: 160px;
   padding: 20px;
-  font-size: 1.2em;
-  border: 2px solid #00fff5;
   border-radius: 10px;
-  resize: vertical;
-  min-height: 150px;
-  font-family: 'Courier New', monospace;
-  background: #0a0a15;
+  border: 2px solid #00fff5;
+  background: #070714;
+  font-size: 1.25em;
   color: #00fff7;
-  margin-bottom: 15px;
-  box-shadow: 0 0 15px #00ffff44;
+  font-family: 'Courier New', monospace;
+  resize: none;
+  box-shadow: 0 0 20px #00ffff55;
 }
 
 #typingArea:focus {
+  border-color: #00ffea;
+  box-shadow: 0 0 35px #00ffffaa;
   outline: none;
-  border-color: #00fff7;
-  box-shadow: 0 0 25px #00ffffaa;
 }
 
 /* --- BUTTONS --- */
 .start-btn, .reset-btn {
-  padding: 15px 40px;
-  font-size: 1.1em;
+  padding: 16px 45px;
+  border-radius: 10px;
+  font-size: 1.2em;
   font-weight: bold;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-right: 10px;
-  color: #fff;
-  letter-spacing: 1px;
+  transition: all .25s ease-in-out;
+  margin: 15px 10px 0;
 }
 
 .start-btn {
-  background: linear-gradient(90deg, #00fff7, #0077ff);
-  box-shadow: 0 0 20px #00ffff66;
+  background: linear-gradient(90deg, #00fff7, #009aff);
+  box-shadow: 0 0 25px #00ffff99;
 }
 
 .start-btn:hover {
-  background: linear-gradient(90deg, #00f0c0, #0088ff);
-  transform: translateY(-3px);
-  box-shadow: 0 0 25px #00ffffaa;
+  transform: translateY(-4px);
+  box-shadow: 0 0 40px #00ffffdd;
 }
 
 .start-btn:disabled {
   background: #333;
-  color: #888;
-  cursor: not-allowed;
+  color: #777;
   box-shadow: none;
+  cursor: not-allowed;
 }
 
 .reset-btn {
-  background: linear-gradient(90deg, #ff005d, #ff7700);
-  box-shadow: 0 0 20px #ff004466;
+  background: linear-gradient(90deg, #ff005d, #ff8c00);
+  box-shadow: 0 0 25px #ff004499;
 }
 
 .reset-btn:hover {
-  background: linear-gradient(90deg, #ff3366, #ff9900);
-  transform: translateY(-3px);
-  box-shadow: 0 0 25px #ff0044aa;
+  transform: translateY(-4px);
+  box-shadow: 0 0 40px #ff0044dd;
 }
 
 /* --- RESPONSIVE --- */
@@ -202,24 +186,19 @@ h1 {
   .stats-bar {
     grid-template-columns: repeat(2, 1fr);
   }
-
   h1 {
-    font-size: 2em;
+    font-size: 2.1em;
   }
-
   .sec {
-    width: 80px;
-    font-size: 1em;
+    width: 90px;
+    font-size: 1.05em;
   }
 }
 
-/* --- GLOW ANIMATION (OPTIONAL) --- */
+/* --- ANIMATION --- */
 @keyframes glow {
   0% { text-shadow: 0 0 10px #00ffff; }
-  50% { text-shadow: 0 0 20px #00ffcc; }
+  50% { text-shadow: 0 0 22px #00ffcc; }
   100% { text-shadow: 0 0 10px #00ffff; }
 }
 
-h1 {
-  animation: glow 2s infinite alternate;
-}

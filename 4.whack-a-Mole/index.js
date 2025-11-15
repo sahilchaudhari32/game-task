@@ -1,212 +1,163 @@
-var player = prompt("Enter Your name");
-const p = document.querySelector('.name');
-p.textContent = player;
+var player = prompt("Enter Your Name");
 
-// DOM Elements
-const scoreDisplay = document.querySelector('#score');
-const timeLeftDisplay = document.querySelector('#timeLeft');
-const maxScoreDisplay = document.querySelector('#maxScore');
-const startBtn = document.querySelector('#startBtn');
-const resetBtn = document.querySelector('#resetBtn');
-const pauseBtn = document.querySelector('#pauseBtn');
-const holes = document.querySelectorAll('.hole');
-const moles = document.querySelectorAll('.mole');
+// Elements
+const scoreDisplay = document.getElementById("score");
+const hitsDisplay = document.getElementById("hits");
+const maxScoreDisplay = document.getElementById("maxScore");
+const lastGameDisplay = document.getElementById("lastGame");
+const fastHitDisplay = document.getElementById("fastHit");
+const timeLeftDisplay = document.getElementById("timeLeft");
+const startBtn = document.getElementById("startBtn");
+const resetBtn = document.getElementById("resetBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const holes = document.querySelectorAll(".hole");
+const moles = document.querySelectorAll(".mole");
+const whackMsg = document.getElementById("whackMsg");
 
-const msg = document.querySelector('#msg');  
-const hitsDisplay = document.querySelector('#hits');
-const lastGameDisplay = document.querySelector('#lastGame');
-const fastestDisplay = document.querySelector('#fastest');
-
+// Variables
 let score = 0;
 let hits = 0;
 let time = 30;
 let bestScore = 0;
 let playGame = false;
-let gameId = null;
 let pause = false;
-
 let moleStartTime = 0;
+let gameLoop;
 
-function webLoad() {
-  onLoad();
-  displayContent();
-  loadLastGameScore();
-  loadFastestHit();
-}
+function loadData() {
+    bestScore = localStorage.getItem("highScoreMole") || 0;
+    maxScoreDisplay.textContent = bestScore;
 
-function onLoad() {
-  const temp = localStorage.getItem('highScoreMole');
-  bestScore = temp ? parseInt(temp) : 0;
-}
+    let last = sessionStorage.getItem("lastScore");
+    if(last) lastGameDisplay.textContent = "Last Game Score: " + last;
 
-function displayContent() {
-  scoreDisplay.textContent = score;
-  timeLeftDisplay.textContent = time;
-  maxScoreDisplay.textContent = bestScore;
-  hitsDisplay.textContent = `Hits: ${hits}`;
-}
-
-function loadLastGameScore() {
-  const last = sessionStorage.getItem("lastScore");
-  lastGameDisplay.textContent = last ? `Last Game: ${last}` : "Last Game: None";
-}
-
-function loadFastestHit() {
-  const fast = sessionStorage.getItem("fastestHit");
-  fastestDisplay.textContent = fast ? `Fastest Hit: ${fast}ms` : "Fastest Hit: None";
-}
-
-function endGame() {
-  clearInterval(gameId);
-  playGame = false;
-  startBtn.disabled = false;
-  pauseBtn.disabled = true;
-
-  startBtn.textContent = "Play Again";   
-
-  sessionStorage.setItem("lastScore", score);
-  loadLastGameScore();
-
-  const bgVideo = document.querySelector('#bg-video');
-
-  if (score > bestScore) {
-    bestScore = score;
-    localStorage.setItem('highScoreMole', bestScore);
-
-    //Glow Best Score
-    maxScoreDisplay.style.textShadow = "0 0 20px yellow";
-    setTimeout(() => {
-      maxScoreDisplay.style.textShadow = "none";
-    }, 1000);
-
-    alert(`🎉 New High Score! You scored: ${score}`);
-
-    bgVideo.classList.add('show');
-
-    setTimeout(() => {
-      bgVideo.classList.remove('show');
-    }, 10000);
-  } else {
-    alert(`Your current score: ${score}`);
-  }
-
-  displayContent();
+    let fastest = sessionStorage.getItem("fastestHit");
+    if(fastest) fastHitDisplay.textContent = "Fastest Hit: " + fastest + "ms";
 }
 
 function randomTime(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
+    return Math.random() * (max - min) + min;
 }
 
 function randomHole() {
-  const index = Math.floor(Math.random() * holes.length);
-  return holes[index];
+    return holes[Math.floor(Math.random() * holes.length)];
 }
 
-function popGame() {
-  if (!playGame || pause) return;
+function popMole() {
+    if (!playGame || pause) return;
 
-  let min = time < 10 ? 300 : 500;
-  let max = time < 10 ? 800 : 1500;
+    let speed = time < 10 ? randomTime(300, 800) : randomTime(800, 1500);
 
-  const timer = randomTime(min, max);
-  const hole = randomHole();
-  const mole = hole.querySelector('.mole');
+    const hole = randomHole();
+    const mole = hole.querySelector(".mole");
 
-  moleStartTime = Date.now(); 
+    mole.classList.add("up");
+    moleStartTime = Date.now();
 
-  mole.classList.add('up');
-
-  setTimeout(() => {
-    mole.classList.remove('up');
-    if (playGame && !pause) popGame();
-  }, timer);
+    setTimeout(() => {
+        mole.classList.remove("up");
+        if (playGame && !pause) popMole();
+    }, speed);
 }
 
 function startGame() {
-  time = 30;
-  score = 0;
-  hits = 0;
-  playGame = true;
-  pause = false;
+    score = 0;
+    hits = 0;
+    time = 30;
+    playGame = true;
+    pause = false;
 
-  startBtn.disabled = true;
-  resetBtn.disabled = true;
-  pauseBtn.disabled = false;
-  pauseBtn.textContent = "Pause Game";
+    scoreDisplay.textContent = score;
+    hitsDisplay.textContent = hits;
+    timeLeftDisplay.textContent = time;
+    startBtn.textContent = "Playing...";
+    pauseBtn.disabled = false;
 
-  sessionStorage.removeItem("lastScore");
-  loadLastGameScore();
+    popMole();
 
-  displayContent();
-  popGame();
+    gameLoop = setInterval(() => {
+        if (!pause) {
+            time--;
+            timeLeftDisplay.textContent = time;
+            if (time <= 0) endGame();
+        }
+    }, 1000);
+}
 
-  gameId = setInterval(() => {
-    if (!pause) {
-      time--;
-      displayContent();
+function endGame() {
+    playGame = false;
+    clearInterval(gameLoop);
 
-      if (time <= 0) endGame();
+    sessionStorage.setItem("lastScore", score);
+
+    if (score > bestScore) {
+        bestScore = score;
+        localStorage.setItem("highScoreMole", bestScore);
+
+        maxScoreDisplay.classList.add("glow");
+
+        setTimeout(() => maxScoreDisplay.classList.remove("glow"), 1000);
+
+        alert("🎉 New Record! Score: " + score);
+    } else {
+        alert("Game Over! Score: " + score);
     }
-  }, 1000);
+
+    lastGameDisplay.textContent = "Last Game Score: " + score;
+    maxScoreDisplay.textContent = bestScore;
+
+    startBtn.textContent = "Play Again";
 }
 
 function resetGame() {
-  score = 0;
-  hits = 0;
-  bestScore = 0;
-  localStorage.removeItem('highScoreMole');
-  time = 30;
-  displayContent();
-  alert("Game has been reset!");
+    localStorage.removeItem("highScoreMole");
+    sessionStorage.clear();
+    bestScore = 0;
+    score = 0;
+    hits = 0;
+    lastGameDisplay.textContent = "";
+    fastHitDisplay.textContent = "";
+    maxScoreDisplay.textContent = 0;
+    scoreDisplay.textContent = 0;
+    hitsDisplay.textContent = 0;
+    alert("Game Reset!");
 }
 
-function bonk(event) {
-  if (!event.isTrusted) return;
+function bonk(e) {
+    if (!e.isTrusted || !e.target.classList.contains("up")) return;
 
-  if (event.target.classList.contains('up')) {
-    event.target.classList.remove('up');
-    event.target.classList.add('bonked');
+    e.target.classList.remove("up");
+
+    hits++;
+    hitsDisplay.textContent = hits;
 
     score++;
-    hits++;
+    scoreDisplay.textContent = score;
 
-    if (score > 50) scoreDisplay.style.color = "gold";
+    if(score > 50) scoreDisplay.style.color = "gold";
 
-    displayContent();
+    whackMsg.style.opacity = 1;
+    setTimeout(()=> whackMsg.style.opacity = 0, 300);
 
-    msg.textContent = "Whack!";
-    msg.style.opacity = 1;
-    setTimeout(() => (msg.style.opacity = 0), 300);
+    let hitTime = Date.now() - moleStartTime;
+    let fastest = sessionStorage.getItem("fastestHit") || Infinity;
 
-    let timeTaken = Date.now() - moleStartTime;
-    let fastest = sessionStorage.getItem("fastestHit");
-    if (!fastest || timeTaken < fastest) {
-      sessionStorage.setItem("fastestHit", timeTaken);
-      loadFastestHit();
+    if(hitTime < fastest){
+        sessionStorage.setItem("fastestHit", hitTime);
+        fastHitDisplay.textContent = "Fastest Hit: " + hitTime + "ms";
     }
-
-    setTimeout(() => {
-      event.target.classList.remove('bonked');
-    }, 300);
-  }
 }
 
 function pauseGame() {
-  if (!playGame) return;
+    pause = !pause;
+    pauseBtn.textContent = pause ? "Resume Game" : "Pause Game";
 
-  if (!pause) {
-    pause = true;
-    pauseBtn.textContent = "Resume Game";
-  } else {
-    pause = false;
-    pauseBtn.textContent = "Pause Game";
-    popGame();
-  }
+    if (!pause && playGame) popMole();
 }
 
-webLoad();
-moles.forEach((box) => box.addEventListener('click', bonk));
+loadData();
+moles.forEach(m => m.addEventListener("click", bonk));
 
-startBtn.addEventListener('click', startGame);
-resetBtn.addEventListener('click', resetGame);
-pauseBtn.addEventListener('click', pauseGame);
+startBtn.addEventListener("click", startGame);
+resetBtn.addEventListener("click", resetGame);
+pauseBtn.addEventListener("click", pauseGame);

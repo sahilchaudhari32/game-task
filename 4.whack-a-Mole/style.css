@@ -212,3 +212,16 @@ h1 {
     height: 5.3vh;
     background-color: rgb(51, 90, 234);
 }
+.whack-msg {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: gold;
+    height: 40px;
+    transition: opacity 0.2s;
+    opacity: 0;
+}
+
+.glow {
+  text-shadow: 0 0 15px yellow;
+}
